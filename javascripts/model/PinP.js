@@ -27,6 +27,7 @@
     navigator.webkitGetUserMedia(this.option.stream_option, function(stream){
       var url = window.URL.createObjectURL(stream);
       this.$video.attr("src", url);
+      this.start();
 
       if(typeof(successCallback) === "function") {
         successCallback();
