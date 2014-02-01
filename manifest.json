@@ -1,0 +1,25 @@
+{
+  "name": "PinP for Chrome",
+  "description": "Enable Picture in Picture inside Chrome",
+  "version": "0.1",
+  "permissions": ["contextMenus"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": [
+        "/frameworks/jquery-2.1.0.min.js", 
+        "/frameworks/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js",
+        "/javascripts/main.js"
+      ],
+      "css": [
+        "/frameworks/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": [
+      "/javascripts/background.js" 
+    ]
+  },
+  "manifest_version": 2
+}
