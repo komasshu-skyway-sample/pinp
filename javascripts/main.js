@@ -1,10 +1,15 @@
+/* main.js */
 
 (function(global){
-  var startFlag = false // false if PinP doesn't start
-    , $div    // div node displays PinP
+  // constants
+  var INIT = 0
+    , PLAYING = 1
+    , PAUSED = 2
     , WIDTH = 160  // width of PinP frame
     , HEIGHT = 120 // height of PinP frame
     , ASPECT = WIDTH / HEIGHT // aspect ratio of PinP frame
+  var status = INIT // status for PinP
+    , $div    // div node displays PinP
 
   function startPinP(){
     $div = $("<div>")
@@ -22,22 +27,56 @@
       .draggable()
       .resizable({aspectRatio: ASPECT})
       .appendTo("body");
+
+    setEventHandler();
+    
+    status = PLAYING;
+  }
+
+  // eventHandler
+  ////////////////////////////
+
+  var setEventHandler = function(){
+    // when double clicked PinP toggle video play/pause.
+    $div.on("dblclick", function(ev) {
+      switch(status) {
+      case INIT:
+        break;
+      case PLAYING:
+        $div.trigger("stop");
+        status = PAUSED;
+        break;
+      case PAUSED:
+        $div.trigger("start");
+        status = PLAYING;
+        break;
+      default:
+        break;
+      }
+    });
   }
 
 
+  // Deffinitions for chrome Message Passing
+  // from background pages
+  ///////////////////////////
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       switch(request.op) {
       case "start":
-        if(!startFlag) {
+        if(status === INIT) {
           startFlag = true;
           startPinP();
-        } else {
+        } else if(status === PAUSED) {
           $div.trigger("start");
+          status = PLAYING;
         }
         break;
       case "stop":
-        $div.trigger("stop");
+        if  (status === PLAYING) {
+          $div.trigger("stop");
+          status = PAUSED
+        }
         break;
       default:
         break;
